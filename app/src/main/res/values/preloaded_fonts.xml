@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/adamina</item>
+        <item>@font/alex_brush</item>
+        <item>@font/allan_bold</item>
+        <item>@font/bad_script</item>
+        <item>@font/caveat_brush</item>
+        <item>@font/dynalight</item>
+        <item>@font/euphoria_script</item>
+        <item>@font/playball</item>
+        <item>@font/stint_ultra_condensed</item>
+    </array>
+</resources>

@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Flowtain</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Flowtain</string>
+    <string name="nav_header_subtitle">Reward Your Efforts</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="timer_settings">Timer Settings</string>
+
+    <string name="menu_points">Points</string>
+    <string name="menu_points_settings">Points Settings</string>
+    <string name="menu_today">Today</string>
+    <string name="menu_calendar">Calendar</string>
+    <string name="menu_timer">Timer</string>
+
+
+    <string name="action_settings">Settings</string>
+    <string name="pref_key_night" translatable="false">key_night_mode</string>
+    <string name="pref_night_title">Night mode</string>
+    <string name="pref_night_summary">Select a dark or light theme.</string>
+    <string name="pref_night_dialog">Set Night mode</string>
+    <string name="pref_night_auto" translatable="false">auto</string>
+    <string name="pref_night_on" translatable="false">on</string>
+    <string name="pref_night_off" translatable="false">off</string>
+    <string name="night_mode_auto">Automatic</string>
+    <string name="night_mode_on">Night mode</string>
+    <string name="night_mode_off">Day mode</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+</resources>
