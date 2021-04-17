@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/nav_gallery"
         android:name="com.example.flowtain.ui.gallery.GalleryFragment"
-        android:label="@string/menu_today"
+        android:label="@string/menu_settings"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
@@ -26,5 +26,15 @@
         android:id="@+id/nav_timer"
         android:name="com.example.flowtain.ui.timer.TimerFragment"
         android:label="@string/menu_timer"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_timer" />
+    <fragment
+        android:id="@+id/nav_point_settings"
+        android:name="com.example.flowtain.ui.timer.TimerFragment"
+        android:label="@string/menu_timer"
+        tools:layout="@xml/points_settings" />
+    <fragment
+        android:id="@+id/nav_timer_settings"
+        android:name="com.example.flowtain.ui.timer.TimerFragment"
+        android:label="@string/menu_timer"
+        tools:layout="@xml/timer_settings" />
 </navigation>

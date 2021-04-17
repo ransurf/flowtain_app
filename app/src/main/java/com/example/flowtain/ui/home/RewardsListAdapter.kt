@@ -1,27 +1,29 @@
 package com.example.flowtain.ui.home
+
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flowtain.R
 import com.example.flowtain.ui.timer.TimerFragment
-import com.example.flowtain.ui.timer.TimerFragment.Companion.points
+import com.example.flowtain.util.PrefUtil
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.list_reward.view.*
 import kotlin.collections.ArrayList
 
-class RewardsListAdapter(private val context:Context,
+class RewardsListAdapter(private val context: Context,
                          private val rewardsList: ArrayList<Reward>,
-                         private val onNoteListener: OnNoteListener):
-                        RecyclerView.Adapter<RewardsListAdapter.ViewHolder>() {
+                         private val onNoteListener: OnNoteListener, private val textViewNumPoints: TextView) :
+        RecyclerView.Adapter<RewardsListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, position: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(context)
         val reward = layoutInflater.inflate(R.layout.list_reward, viewGroup, false)
-        //val deleteButton = reward.findViewById(R.id.btn_delete)
         return ViewHolder(reward, onNoteListener)
     }
 
@@ -30,17 +32,13 @@ class RewardsListAdapter(private val context:Context,
         viewHolder.bind(rewardsList[position])
     }
 
-    fun deleteReward(view: View) {
-        rewardsList.removeAt(0)
-        notifyDataSetChanged()
-    }
-
     override fun getItemCount() = rewardsList.size
 
-    inner class ViewHolder(itemView: View, onNoteListener: OnNoteListener): RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class ViewHolder(itemView: View, onNoteListener: OnNoteListener) : RecyclerView.ViewHolder(itemView),
+            View.OnClickListener {
         var onNoteListener: OnNoteListener
-        var deleteButton : Button
-        var claimButton : Button
+        var deleteButton: Button
+        var claimButton: Button
 
         init {
             itemView.setOnClickListener(this)
@@ -51,7 +49,7 @@ class RewardsListAdapter(private val context:Context,
             claimButton.setOnClickListener(this)
         }
 
-        fun bind(rewardName: Reward){
+        fun bind(rewardName: Reward) {
             itemView.reward_title.text = rewardName.label
             itemView.reward_cost.text = rewardName.cost.toString() + " Points"
         }
@@ -61,11 +59,12 @@ class RewardsListAdapter(private val context:Context,
                 deleteButton -> rewardsList.removeAt(adapterPosition)
 
                 claimButton -> {
-                    if (rewardsList[adapterPosition].cost <= points) {
-                        points -= rewardsList[adapterPosition].cost
-                        Toast.makeText(context, "$points", Toast.LENGTH_SHORT).show()
+                    if (rewardsList[adapterPosition].cost <= PrefUtil.getPoints(context)) {
+                        val newPoints = PrefUtil.getPoints(context) - rewardsList[adapterPosition].cost
+                        PrefUtil.setPoints(newPoints, context)
+                        textViewNumPoints.text = "You have ${PrefUtil.getPoints(context)} points!"
+                        Toast.makeText(context, "Enjoy your reward!", Toast.LENGTH_SHORT).show()
                         rewardsList.removeAt(adapterPosition)
-                        Log.i("RewardsListAdapter", "$points")
                     } else {
                         Toast.makeText(context, "Insufficient Points!",
                                 Toast.LENGTH_SHORT).show()
@@ -77,6 +76,6 @@ class RewardsListAdapter(private val context:Context,
     }
 
     interface OnNoteListener {
-        fun onNoteClick(position : Int)
+        fun onNoteClick(position: Int)
     }
 }

@@ -1,24 +1,30 @@
 package com.example.flowtain.util
 
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import com.example.flowtain.ui.timer.TimerFragment
 
 class PrefUtil {
     companion object {
         private const val NUM_POINTS = "com.example.home.points"
-        fun getNumPoints(context: Context): Long{
+        fun getPoints(context: Context): Long{
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
             return preferences.getLong(NUM_POINTS, 0)
         }
-        fun setNumPoints(points: Long, context: Context) {
+        fun setPoints(points: Long, context: Context) {
             val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
             editor.putLong(NUM_POINTS, points)
             editor.apply()
         }
         
         private const val TIMER_LENGTH_ID = "com.example.timer.timer_length"
+        fun setTimerLength(timerLength: Int, context: Context) {
+            val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
+            editor.putInt(TIMER_LENGTH_ID, timerLength)
+            editor.apply()
+        }
+
         fun getTimerLength(context: Context): Int{
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
             return preferences.getInt(TIMER_LENGTH_ID, 10)

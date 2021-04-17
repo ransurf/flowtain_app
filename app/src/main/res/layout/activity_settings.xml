@@ -7,14 +7,4 @@
     tools:context="com.example.flowtain.ui.settings.SettingsActivity"
     android:background="@color/white">
 
-
-    <fragment
-        android:id="@+id/fragment"
-        android:name="com.example.flowtain.ui.settings.SettingsActivityFragment"
-        android:textColor="@color/white"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,6 @@
         <SwitchPreferenceCompat
         app:key="notifications"
         app:title="Enable message notifications"/>
-
     <Preference
         android:backgroundTint="#FFFFFF"
         app:key="feedback"

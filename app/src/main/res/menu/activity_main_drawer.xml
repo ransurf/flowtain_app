@@ -9,16 +9,17 @@
             android:icon="@drawable/ic_menu_points"
             android:title="@string/menu_points" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_today"
-            android:title="@string/menu_today" />
-        <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_calendar"
             android:title="@string/menu_calendar" />
+        <item
+            android:id="@+id/nav_timer"
+            android:icon="@drawable/ic_menu_timer"
+            android:title="@string/menu_timer" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/menu_settings" />
     </group>
-    <item
-        android:id="@+id/nav_timer"
-        android:icon="@drawable/ic_menu_timer"
-        android:title="@string/menu_timer" />
+
 </menu>

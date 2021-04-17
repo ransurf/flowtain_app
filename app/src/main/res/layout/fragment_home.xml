@@ -9,7 +9,7 @@
 
 
     <TextView
-        android:id="@+id/num_points"
+        android:id="@+id/textViewNumPoints"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -36,7 +36,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/input_reward_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/num_points" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewNumPoints" />
 
     <Button
         android:id="@+id/btn_create_reward"

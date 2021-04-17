@@ -9,12 +9,12 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flowtain.R
 import com.example.flowtain.ui.settings.SettingsActivity
 import com.example.flowtain.ui.settings.SettingsActivityFragment
-import com.example.flowtain.ui.timer.TimerFragment.Companion.points
 import com.example.flowtain.util.PrefUtil
 import kotlinx.android.synthetic.main.fragment_home.*
 
@@ -22,6 +22,7 @@ class HomeFragment : Fragment(), RewardsListAdapter.OnNoteListener {
 
     var rewardsList = ArrayList<Reward>()
     private lateinit var homeViewModel: HomeViewModel
+    private lateinit var homeViewModelFactory: HomeViewModelFactory
     private lateinit var textNumPoints: TextView
     private lateinit var rewardsAdapter: RewardsListAdapter
     private lateinit var rewardsListView: RecyclerView
@@ -33,16 +34,19 @@ class HomeFragment : Fragment(), RewardsListAdapter.OnNoteListener {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
+        val points = PrefUtil.getPoints(requireActivity())
+        homeViewModelFactory = HomeViewModelFactory(points)
+        homeViewModel = ViewModelProvider(this, homeViewModelFactory)
+                .get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        rewardsAdapter = RewardsListAdapter(this.requireActivity(), rewardsList, this)
+
         btnAddReward = root.findViewById(R.id.btn_create_reward)
         rewardsListView = root.findViewById(R.id.rewards_list_view)
         inputTitle = root.findViewById(R.id.input_reward_title)
         inputTitle = root.findViewById(R.id.input_points_cost)
-        textNumPoints = root.findViewById(R.id.num_points)
-        rewardsListView.adapter = RewardsListAdapter(this.requireActivity(), rewardsList, this)
+        textNumPoints = root.findViewById(R.id.textViewNumPoints)
+        rewardsAdapter = RewardsListAdapter(this.requireActivity(), rewardsList, this, textNumPoints)
+        rewardsListView.adapter = RewardsListAdapter(this.requireActivity(), rewardsList, this, textNumPoints)
         setHasOptionsMenu(true)
         return root
     }
@@ -78,18 +82,25 @@ class HomeFragment : Fragment(), RewardsListAdapter.OnNoteListener {
                 input_points_cost.text.clear()
             }
         }
-
-        Log.i("HomeFragment", "$points")
-        textNumPoints.text = "You have ${PrefUtil.getNumPoints(this.requireActivity())} points!"
+        updatePointsDisplay()
+        homeViewModel.points.observe(this, { points ->
+            textNumPoints.text = "You have $points points!"
+        })
+        Log.i("HomeFragment", "${PrefUtil.getPoints(this.requireActivity())}")
+        //textNumPoints.text = "You have ${PrefUtil.getPoints(this.requireActivity())} points!"
         rewardsList.add(Reward("Play VALORANT", 50))
         rewardsList.add(Reward("Play VALORANT", 50))
         rewardsList.add(Reward("Play VALORANT", 50))
 
     }
 
+    fun updatePointsDisplay() {
+        textNumPoints.text = "You have ${PrefUtil.getPoints(requireActivity())} points!"
+    }
+
     override fun onPause() {
         super.onPause()
-        PrefUtil.setNumPoints(points, this.requireActivity())
+        PrefUtil.setPoints(PrefUtil.getPoints(this.requireActivity()), this.requireActivity())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) { //inflates menu
@@ -110,7 +121,5 @@ class HomeFragment : Fragment(), RewardsListAdapter.OnNoteListener {
     }
 
     override fun onNoteClick(position: Int) {
-        //rewardsList.removeAt(0)
-        //rewardsAdapter.notifyDataSetChanged()
     }
 }
