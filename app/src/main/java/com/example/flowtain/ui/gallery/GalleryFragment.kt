@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.flowtain.R
 import com.example.flowtain.util.PrefUtil
 import kotlinx.android.synthetic.main.fragment_gallery.*
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.textViewNumPoints
 
 
 class GalleryFragment : Fragment(), View.OnClickListener {
@@ -46,7 +46,7 @@ class GalleryFragment : Fragment(), View.OnClickListener {
             saveSettings -> {
                 if (inputLength.text.toString() != "") {
                     PrefUtil.setTimerLength(inputLength.text.toString().toInt(), requireActivity())
-                    Log.i("GalleryFragment", "${PrefUtil.getTimerLength(requireActivity())}")
+                    //Log.i("GalleryFragment", "${PrefUtil.getTimerLength(requireActivity())}")
                 } else {
                     PrefUtil.setTimerLength(30, this.requireActivity())
                 }

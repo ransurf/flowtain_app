@@ -9,10 +9,6 @@
             android:icon="@drawable/ic_menu_points"
             android:title="@string/menu_points" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_calendar"
-            android:title="@string/menu_calendar" />
-        <item
             android:id="@+id/nav_timer"
             android:icon="@drawable/ic_menu_timer"
             android:title="@string/menu_timer" />

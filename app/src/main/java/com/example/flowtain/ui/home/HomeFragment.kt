@@ -1,6 +1,5 @@
 package com.example.flowtain.ui.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -9,17 +8,14 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flowtain.R
-import com.example.flowtain.ui.settings.SettingsActivity
-import com.example.flowtain.ui.settings.SettingsActivityFragment
+import com.example.flowtain.TinyDB
 import com.example.flowtain.util.PrefUtil
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment(), RewardsListAdapter.OnNoteListener {
-
     var rewardsList = ArrayList<Reward>()
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var homeViewModelFactory: HomeViewModelFactory
@@ -28,7 +24,7 @@ class HomeFragment : Fragment(), RewardsListAdapter.OnNoteListener {
     private lateinit var rewardsListView: RecyclerView
     private lateinit var inputTitle: EditText
     private lateinit var btnAddReward: Button
-
+    private lateinit var tinyDB : TinyDB
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -45,8 +41,12 @@ class HomeFragment : Fragment(), RewardsListAdapter.OnNoteListener {
         inputTitle = root.findViewById(R.id.input_reward_title)
         inputTitle = root.findViewById(R.id.input_points_cost)
         textNumPoints = root.findViewById(R.id.textViewNumPoints)
+        tinyDB = TinyDB(requireActivity())
+
+        Log.i("HomeFragment", "$rewardsList")
         rewardsAdapter = RewardsListAdapter(this.requireActivity(), rewardsList, this, textNumPoints)
         rewardsListView.adapter = RewardsListAdapter(this.requireActivity(), rewardsList, this, textNumPoints)
+
         setHasOptionsMenu(true)
         return root
     }
@@ -78,19 +78,25 @@ class HomeFragment : Fragment(), RewardsListAdapter.OnNoteListener {
             if (rewardTitle != "" && rewardCost >= 0) {
                 rewardsList.add(newReward)
                 rewardsAdapter.notifyItemInserted(rewardsList.size - 1)
-                input_reward_title.text.clear()
-                input_points_cost.text.clear()
+            }
+            Log.i("HomeFragment", "$rewardsList")
+            input_reward_title.text.clear()
+            input_points_cost.text.clear()
+        }
+        //retrieves previous rewards list from sharedpreferences
+        var rewardsListTemp: java.util.ArrayList<Any>? =
+                tinyDB.getListObject("rewards", Reward::class.java)
+        if (rewardsListTemp != null) {
+            for (reward in rewardsListTemp) {
+                rewardsList.add(reward as Reward)
             }
         }
+        rewardsAdapter.notifyDataSetChanged()
+
         updatePointsDisplay()
         homeViewModel.points.observe(this, { points ->
             textNumPoints.text = "You have $points points!"
         })
-        Log.i("HomeFragment", "${PrefUtil.getPoints(this.requireActivity())}")
-        //textNumPoints.text = "You have ${PrefUtil.getPoints(this.requireActivity())} points!"
-        rewardsList.add(Reward("Play VALORANT", 50))
-        rewardsList.add(Reward("Play VALORANT", 50))
-        rewardsList.add(Reward("Play VALORANT", 50))
 
     }
 
@@ -100,24 +106,13 @@ class HomeFragment : Fragment(), RewardsListAdapter.OnNoteListener {
 
     override fun onPause() {
         super.onPause()
-        PrefUtil.setPoints(PrefUtil.getPoints(this.requireActivity()), this.requireActivity())
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) { //inflates menu
-        super.onCreateOptionsMenu(menu, menuInflater)
-        menuInflater.inflate(R.menu.menu_points_popup, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.points_settings -> {
-                SettingsActivityFragment.preference = "points"
-                val intent = Intent(this.requireActivity(), SettingsActivity::class.java)
-                startActivity(intent)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+        var rewardsObjects = ArrayList<Object>()
+        for (reward in rewardsList) {
+            Log.i("HomeFragment", reward.toString())
+            rewardsObjects.add((reward as Object))
         }
+        tinyDB.putListObject("rewards", rewardsObjects)
+        PrefUtil.setPoints(PrefUtil.getPoints(requireActivity()), requireActivity())
     }
 
     override fun onNoteClick(position: Int) {

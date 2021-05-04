@@ -11,8 +11,7 @@ import com.example.flowtain.util.PrefUtil
 class TimerExpiredReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        NotificationUtil.showTimerExpired(context)
-
+        //NotificationUtil.showTimerExpired(context)
         PrefUtil.setTimerState(TimerFragment.TimerState.Stopped, context)
         PrefUtil.setAlarmSetTime(0, context)
 

@@ -3,6 +3,8 @@ package com.example.flowtain.util
 import android.content.Context
 import androidx.preference.PreferenceManager
 import android.util.Log
+import com.example.flowtain.TinyDB
+import com.example.flowtain.ui.home.Reward
 import com.example.flowtain.ui.timer.TimerFragment
 
 class PrefUtil {
@@ -17,7 +19,7 @@ class PrefUtil {
             editor.putLong(NUM_POINTS, points)
             editor.apply()
         }
-        
+
         private const val TIMER_LENGTH_ID = "com.example.timer.timer_length"
         fun setTimerLength(timerLength: Int, context: Context) {
             val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()

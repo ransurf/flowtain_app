@@ -9,10 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Flowtain">
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/Theme.Flowtain.NoActionBar"></activity>
 
         <receiver
             android:name=".TimerNotificationActionReceiver"

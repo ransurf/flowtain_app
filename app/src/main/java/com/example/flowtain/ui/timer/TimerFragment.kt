@@ -13,13 +13,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.flowtain.R
 import com.example.flowtain.R.*
-import com.example.flowtain.ui.settings.SettingsActivity
-import com.example.flowtain.ui.settings.SettingsActivityFragment
 import com.example.flowtain.TimerExpiredReceiver
 import com.example.flowtain.util.NotificationUtil
+import com.example.flowtain.util.PointsUtil
 import com.example.flowtain.util.PrefUtil
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.fragment_gallery.*
 import kotlinx.android.synthetic.main.fragment_timer.*
 import java.util.*
 
@@ -27,7 +25,7 @@ import java.util.*
 class TimerFragment : Fragment(), View.OnClickListener {
 
     companion object {
-
+        //sets alarm for the timer
         fun setAlarm(context: Context, nowSeconds: Long, secondsRemaining: Long): Long {
             val wakeUpTime = (nowSeconds + secondsRemaining) * 1000
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -37,7 +35,7 @@ class TimerFragment : Fragment(), View.OnClickListener {
             PrefUtil.setAlarmSetTime(nowSeconds, context)
             return wakeUpTime
         }
-
+        //removes the alarm for the timer
         fun removeAlarm(context: Context) {
             val intent = Intent(context, TimerExpiredReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
@@ -45,17 +43,17 @@ class TimerFragment : Fragment(), View.OnClickListener {
             alarmManager.cancel(pendingIntent)
             PrefUtil.setAlarmSetTime(0, context)
         }
-
+        //current time
         val nowSeconds: Long
             get() = Calendar.getInstance().timeInMillis / 1000
     }
 
-    private lateinit var timerViewModel: TimerViewModel
+    private lateinit var timerViewModel: TimerViewModel //yet to be fully implemented
     private lateinit var timer: CountDownTimer
     private var timerLengthSeconds = 0L
     private var timerState = TimerState.Stopped
     private var secondsRemaining = 0L
-    private lateinit var fab_start: FloatingActionButton
+    private lateinit var fab_start: FloatingActionButton //buttons for changing timer state
     private lateinit var fab_pause: FloatingActionButton
     private lateinit var fab_stop: FloatingActionButton
 
@@ -90,7 +88,7 @@ class TimerFragment : Fragment(), View.OnClickListener {
 
         fab_stop.setOnClickListener {
             timer.cancel()
-            PrefUtil.setPoints(timerLengthSeconds - secondsRemaining, requireActivity())// 60
+            PointsUtil.addPoints(timerLengthSeconds-secondsRemaining, requireActivity())
             onTimerFinished()
         }
         setHasOptionsMenu(true)
@@ -116,17 +114,17 @@ class TimerFragment : Fragment(), View.OnClickListener {
         } else if (timerState == TimerState.Paused) {
             NotificationUtil.showTimerPaused(requireActivity())
         }
-
+        //stores variables on fragment exit
         PrefUtil.setPreviousTimerLengthSeconds(timerLengthSeconds, requireActivity())
         PrefUtil.setSecondsRemaining(secondsRemaining, requireActivity())
         PrefUtil.setTimerState(timerState, requireActivity())
     }
 
     private fun initTimer() {
+        //Log.i("TimerFragment", "InitTimer called")
         timerState = PrefUtil.getTimerState(requireActivity())
-
-
         if (timerState == TimerState.Stopped) {
+            PointsUtil.addPoints(timerLengthSeconds, requireActivity())
             setNewTimerLength()
         } else {
             setPreviousTimerLength()
@@ -146,14 +144,16 @@ class TimerFragment : Fragment(), View.OnClickListener {
             onTimerFinished()
         } else if (timerState == TimerState.Running)
             startTimer()
-
+        //Log.i("TimerFragment", "$secondsRemaining")
         updateButtons()
         updateCountdownUI()
     }
 
     private fun onTimerFinished() {
+        //Log.i("TimerFragment", "onTimerFinished called")
         timerState = TimerState.Stopped
         setNewTimerLength()
+
         progress_countdown.progress = 0
         PrefUtil.setSecondsRemaining(timerLengthSeconds, requireActivity())
         secondsRemaining = timerLengthSeconds
@@ -163,13 +163,12 @@ class TimerFragment : Fragment(), View.OnClickListener {
     }
 
     private fun startTimer() {
-        Log.i("MainActvity", "pointsEarned: ${PrefUtil.getPoints(requireActivity())}")
+        Log.i("TimerFragment", "StartTimer called")
         timerState = TimerState.Running
         timer = object : CountDownTimer(secondsRemaining * 1000, 1000) {
             override fun onFinish() {
                 onTimerFinished()
-                PrefUtil.setPoints(PrefUtil.getPoints(requireActivity()) + timerLengthSeconds,
-                        requireActivity())
+                PointsUtil.addPoints(timerLengthSeconds, requireActivity())
                 //points +=  // 60
             }
 
@@ -184,7 +183,6 @@ class TimerFragment : Fragment(), View.OnClickListener {
 
     private fun setNewTimerLength() {
         val lengthInMinutes = PrefUtil.getTimerLength(requireActivity())
-        Log.i("TimerFragment", "$PrefUtil.getTimerLength(requireActivity())")
         timerLengthSeconds = (lengthInMinutes * 60L)
         progress_countdown.max = timerLengthSeconds.toInt()
     }
@@ -203,7 +201,9 @@ class TimerFragment : Fragment(), View.OnClickListener {
             else "0" + secondsStr
         }"
         if (timerState == TimerState.Stopped) {
-            Log.i("TimerFragment", "updates text ui $minutesUntilFinished")
+            if (minutesUntilFinished<1) {
+                //PointsUtil.addPoints(timerLengthSeconds, requireActivity())
+            }
             text_countdown.text = "${PrefUtil.getTimerLength(requireActivity()).toLong()}:00"
         }
         progress_countdown.progress = (timerLengthSeconds - secondsRemaining).toInt()
@@ -226,23 +226,6 @@ class TimerFragment : Fragment(), View.OnClickListener {
                 fab_pause.isEnabled = false
                 fab_stop.isEnabled = true
             }
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.menu_timer_popup, menu)
-        (drawable.ic_menu_timer)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> {
-                SettingsActivityFragment.preference = "timer"
-                val intent = Intent(requireActivity(), SettingsActivity::class.java)
-                startActivity(intent)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
