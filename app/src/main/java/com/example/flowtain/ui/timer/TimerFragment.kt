@@ -88,7 +88,7 @@ class TimerFragment : Fragment(), View.OnClickListener {
 
         fab_stop.setOnClickListener {
             timer.cancel()
-            PointsUtil.addPoints(timerLengthSeconds-secondsRemaining, requireActivity())
+            PointsUtil.addPoints((timerLengthSeconds-secondsRemaining)/60, requireActivity())
             onTimerFinished()
         }
         setHasOptionsMenu(true)
@@ -124,7 +124,7 @@ class TimerFragment : Fragment(), View.OnClickListener {
         //Log.i("TimerFragment", "InitTimer called")
         timerState = PrefUtil.getTimerState(requireActivity())
         if (timerState == TimerState.Stopped) {
-            PointsUtil.addPoints(timerLengthSeconds, requireActivity())
+            PointsUtil.addPoints(timerLengthSeconds/60, requireActivity())
             setNewTimerLength()
         } else {
             setPreviousTimerLength()
@@ -168,7 +168,7 @@ class TimerFragment : Fragment(), View.OnClickListener {
         timer = object : CountDownTimer(secondsRemaining * 1000, 1000) {
             override fun onFinish() {
                 onTimerFinished()
-                PointsUtil.addPoints(timerLengthSeconds, requireActivity())
+                PointsUtil.addPoints(timerLengthSeconds/60, requireActivity())
                 //points +=  // 60
             }
 
